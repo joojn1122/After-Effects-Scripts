@@ -46,7 +46,7 @@ function rippleDelete() {
     for (var i = 0; i < otherLayers.length; i++) {
         var otherLayer = otherLayers[i];
         var end = otherLayer.outPoint;
-        if (firstStart < end) {
+        if (first.inPoint < end) {
             continue;
         }
         if (end > furthest) {

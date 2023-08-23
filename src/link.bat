@@ -1,5 +1,5 @@
 @echo off
-setlocal
+SETLOCAL ENABLEDELAYEDEXPANSION
 
 :: BatchGotAdmin
 :-------------------------------------

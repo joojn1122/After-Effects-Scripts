@@ -70,7 +70,7 @@ function rippleDelete(): void {
         var otherLayer = otherLayers[i];
         
         var end = otherLayer.outPoint;
-        if(firstStart < end) {
+        if(first.inPoint < end) {
             continue;
         }
 
