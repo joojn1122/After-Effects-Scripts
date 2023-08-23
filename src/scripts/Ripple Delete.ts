@@ -1,5 +1,5 @@
 // Namespace required to bypass typescript errors, redefinision
-namespace RippleShift {
+namespace RippleDelete {
     const project = app.project;
 
     /**
@@ -16,14 +16,14 @@ namespace RippleShift {
         return start - (inPoint - start);
     }
 
-    function rippleShift(): void {
+    function rippleDelete(): void {
         // Check if there is a selected composition
         const comp = project.activeItem;
         if(comp == null || !(comp instanceof CompItem)) {
             alert("Please select a composition");
             return;
         }
-
+        
         // Check if there are any selected layers
         const layers = comp.selectedLayers;
         if(layers.length == 0) {
@@ -32,7 +32,7 @@ namespace RippleShift {
         }
 
         // Start undo group
-        app.beginUndoGroup("Ripple Shift");
+        app.beginUndoGroup("Ripple Delete");
         
         const selectedLayers = comp.selectedLayers;
         const otherLayers: Layer[] = [];
@@ -66,35 +66,52 @@ namespace RippleShift {
             }
         }
 
-        // Find the furthest out point
-        var firstStart = getRealStartOffset(first);
+        const targetLayers: Layer[] = [];
         var furthest = 0;
+        var targetFirst: Layer | null = null;
+
+        // Filter other layers into target layers and find the furthest out point
         for(var i = 0; i < otherLayers.length; i++) 
         {
             var otherLayer = otherLayers[i];
-            
-            var end = otherLayer.outPoint;
-            if(first.inPoint < end) {
+            if(first.inPoint > otherLayer.inPoint) {
+                if(otherLayer.outPoint > furthest) {
+                    furthest = otherLayer.outPoint;
+                }
+
                 continue;
             }
 
-            if(end > furthest) {
-                furthest = end;
+            if(targetFirst == null || otherLayer.inPoint < targetFirst.inPoint) {
+                targetFirst = otherLayer;
             }
+
+            targetLayers.push(otherLayer);
         }
 
-        // Shift selected layers
-        for(var i = 0; i < selectedLayers.length; i++)
-        {   
-            var layer = selectedLayers[i];
-            
-            var start = (furthest + getRealStartOffset(layer) - firstStart) - (layer.inPoint - layer.startTime);
+        // Move all the target layers to the start 
+        for(var i = 0; i < targetLayers.length; i++)
+        {
+            var layer = targetLayers[i];
+
+            var start = (
+                furthest + getRealStartOffset(layer)
+                - getRealStartOffset(targetFirst as Layer))
+                - (layer.inPoint - layer.startTime);
+
             layer.startTime = start;
         }
 
-        // End undo group
+        // Delete selected layers
+        for(var i = 0; i < selectedLayers.length; i++)
+        {
+            var layer = selectedLayers[i];
+            layer.remove();
+        }
+
+        // End of undo group
         app.endUndoGroup();
     }
 
-    rippleShift();
+    rippleDelete();
 }

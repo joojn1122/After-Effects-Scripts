@@ -1,13 +1,13 @@
 "use strict";
-var RippleShift;
-(function (RippleShift) {
+var RippleDelete;
+(function (RippleDelete) {
     var project = app.project;
     function getRealStartOffset(layer) {
         var start = layer.startTime;
         var inPoint = layer.inPoint;
         return start - (inPoint - start);
     }
-    function rippleShift() {
+    function rippleDelete() {
         var comp = project.activeItem;
         if (comp == null || !(comp instanceof CompItem)) {
             alert("Please select a composition");
@@ -18,7 +18,7 @@ var RippleShift;
             alert("Please select a layer");
             return;
         }
-        app.beginUndoGroup("Ripple Shift");
+        app.beginUndoGroup("Ripple Delete");
         var selectedLayers = comp.selectedLayers;
         var otherLayers = [];
         for (var i = 1; i <= comp.layers.length; i++) {
@@ -41,24 +41,34 @@ var RippleShift;
                 first = layer;
             }
         }
-        var firstStart = getRealStartOffset(first);
+        var targetLayers = [];
         var furthest = 0;
+        var targetFirst = null;
         for (var i = 0; i < otherLayers.length; i++) {
             var otherLayer = otherLayers[i];
-            var end = otherLayer.outPoint;
-            if (first.inPoint < end) {
+            if (first.inPoint > otherLayer.inPoint) {
+                if (otherLayer.outPoint > furthest) {
+                    furthest = otherLayer.outPoint;
+                }
                 continue;
             }
-            if (end > furthest) {
-                furthest = end;
+            if (targetFirst == null || otherLayer.inPoint < targetFirst.inPoint) {
+                targetFirst = otherLayer;
             }
+            targetLayers.push(otherLayer);
+        }
+        for (var i = 0; i < targetLayers.length; i++) {
+            var layer = targetLayers[i];
+            var start = (furthest + getRealStartOffset(layer)
+                - getRealStartOffset(targetFirst))
+                - (layer.inPoint - layer.startTime);
+            layer.startTime = start;
         }
         for (var i = 0; i < selectedLayers.length; i++) {
             var layer = selectedLayers[i];
-            var start = (furthest + getRealStartOffset(layer) - firstStart) - (layer.inPoint - layer.startTime);
-            layer.startTime = start;
+            layer.remove();
         }
         app.endUndoGroup();
     }
-    rippleShift();
-})(RippleShift || (RippleShift = {}));
+    rippleDelete();
+})(RippleDelete || (RippleDelete = {}));
