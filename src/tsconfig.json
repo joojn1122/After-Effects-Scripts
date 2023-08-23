@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+      "module": "none",
+      "strict": true,
+      "noLib": true,
+      "typeRoots": [],
+      "skipLibCheck": true,
+      "outDir": "../scripts",
+      "removeComments": true,
+    },
+    "exclude": ["node_modules"],
+}

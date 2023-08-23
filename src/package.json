@@ -1,0 +1,13 @@
+{
+  "name": "ae-scripts",
+  "version": "1.0.0",
+  "description": "After Effects scripts",
+  "scripts": {
+    "start": "npx tsc && node rename.js"
+  },
+  "author": "joojn",
+  "license": "ISC",
+  "dependencies": {
+    "typescript": "^5.1.6"
+  }
+}
