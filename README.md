@@ -9,7 +9,7 @@ You can also add shortcut to make the experience similar to the `Premiere Pro`
 Nagivate to `Edit > Keyboard Shortcuts > Search 'Ripple Delete' -> Bind to your keybind`
 
 ## Building
-```sh
+```bat
 git clone https://github.com/joojn/After-Effects-Scripts
 cd After-Effects-Scripts\src
 
