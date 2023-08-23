@@ -13,13 +13,12 @@ var RippleShift;
             alert("Please select a composition");
             return;
         }
-        var layers = comp.selectedLayers;
-        if (layers.length == 0) {
+        var selectedLayers = comp.selectedLayers;
+        if (selectedLayers.length == 0) {
             alert("Please select a layer");
             return;
         }
         app.beginUndoGroup("Ripple Shift");
-        var selectedLayers = comp.selectedLayers;
         var otherLayers = [];
         for (var i = 1; i <= comp.layers.length; i++) {
             var layer = comp.layers[i];
@@ -41,7 +40,6 @@ var RippleShift;
                 first = layer;
             }
         }
-        var firstStart = getRealStartOffset(first);
         var furthest = 0;
         for (var i = 0; i < otherLayers.length; i++) {
             var otherLayer = otherLayers[i];
@@ -53,9 +51,10 @@ var RippleShift;
                 furthest = end;
             }
         }
+        var firstStart = first.inPoint;
         for (var i = 0; i < selectedLayers.length; i++) {
             var layer = selectedLayers[i];
-            var start = (furthest + getRealStartOffset(layer) - firstStart) - (layer.inPoint - layer.startTime);
+            var start = (furthest + layer.inPoint - firstStart) - (layer.inPoint - layer.startTime);
             layer.startTime = start;
         }
         app.endUndoGroup();

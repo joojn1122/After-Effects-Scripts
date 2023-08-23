@@ -13,13 +13,12 @@ var RippleDelete;
             alert("Please select a composition");
             return;
         }
-        var layers = comp.selectedLayers;
-        if (layers.length == 0) {
+        var selectedLayers = comp.selectedLayers;
+        if (selectedLayers.length == 0) {
             alert("Please select a layer");
             return;
         }
         app.beginUndoGroup("Ripple Delete");
-        var selectedLayers = comp.selectedLayers;
         var otherLayers = [];
         for (var i = 1; i <= comp.layers.length; i++) {
             var layer = comp.layers[i];
@@ -47,7 +46,7 @@ var RippleDelete;
         for (var i = 0; i < otherLayers.length; i++) {
             var otherLayer = otherLayers[i];
             if (first.inPoint > otherLayer.inPoint) {
-                if (otherLayer.outPoint > furthest) {
+                if (otherLayer.outPoint < first.inPoint && otherLayer.outPoint > furthest) {
                     furthest = otherLayer.outPoint;
                 }
                 continue;

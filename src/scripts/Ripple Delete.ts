@@ -25,8 +25,8 @@ namespace RippleDelete {
         }
         
         // Check if there are any selected layers
-        const layers = comp.selectedLayers;
-        if(layers.length == 0) {
+        const selectedLayers = comp.selectedLayers;
+        if(selectedLayers.length == 0) {
             alert("Please select a layer");
             return;
         }
@@ -34,11 +34,9 @@ namespace RippleDelete {
         // Start undo group
         app.beginUndoGroup("Ripple Delete");
         
-        const selectedLayers = comp.selectedLayers;
         const otherLayers: Layer[] = [];
-
         // Filter out selected layers
-        for(var i = 1; i <= comp.layers.length; i++) 
+        for(var i = 1; i <= comp.layers.length; i++)
         {
             var layer = comp.layers[i];
             var skip = false;
@@ -75,7 +73,7 @@ namespace RippleDelete {
         {
             var otherLayer = otherLayers[i];
             if(first.inPoint > otherLayer.inPoint) {
-                if(otherLayer.outPoint > furthest) {
+                if(otherLayer.outPoint < first.inPoint && otherLayer.outPoint > furthest) {
                     furthest = otherLayer.outPoint;
                 }
 

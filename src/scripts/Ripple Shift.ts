@@ -25,8 +25,8 @@ namespace RippleShift {
         }
 
         // Check if there are any selected layers
-        const layers = comp.selectedLayers;
-        if(layers.length == 0) {
+        const selectedLayers = comp.selectedLayers;
+        if(selectedLayers.length == 0) {
             alert("Please select a layer");
             return;
         }
@@ -34,7 +34,6 @@ namespace RippleShift {
         // Start undo group
         app.beginUndoGroup("Ripple Shift");
         
-        const selectedLayers = comp.selectedLayers;
         const otherLayers: Layer[] = [];
 
         // Filter out selected layers
@@ -67,7 +66,6 @@ namespace RippleShift {
         }
 
         // Find the furthest out point
-        var firstStart = getRealStartOffset(first);
         var furthest = 0;
         for(var i = 0; i < otherLayers.length; i++) 
         {
@@ -82,13 +80,17 @@ namespace RippleShift {
                 furthest = end;
             }
         }
-
+        
+        var firstStart = first.inPoint;
         // Shift selected layers
         for(var i = 0; i < selectedLayers.length; i++)
         {   
             var layer = selectedLayers[i];
+
+            var start = (
+                furthest + layer.inPoint - firstStart
+            ) - (layer.inPoint - layer.startTime);
             
-            var start = (furthest + getRealStartOffset(layer) - firstStart) - (layer.inPoint - layer.startTime);
             layer.startTime = start;
         }
 
